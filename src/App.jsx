@@ -2,26 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './routes/PrivateRoute';
 import DashboardLayout from './layouts/DashboardLayout';
-
-// Mock components (Bạn sẽ thay thế bằng file thật trong thư mục pages/ sau)
-const LoginPage = () => (
-  <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white">
-    <h2 className="text-3xl font-bold mb-4">Đăng nhập</h2>
-    <div className="p-8 bg-slate-800 rounded-xl shadow-xl w-96 border border-slate-700">
-      <p className="text-slate-400 mb-4 text-sm text-center">Trang đăng nhập đang được xây dựng...</p>
-      <button 
-        onClick={() => {
-          localStorage.setItem('access_token', 'mock_token');
-          localStorage.setItem('user_info', JSON.stringify({ name: 'Admin User', role: 'admin' }));
-          window.location.href = '/dashboard';
-        }}
-        className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-all"
-      >
-        Demo Login (Click để vào Dashboard)
-      </button>
-    </div>
-  </div>
-);
+import LoginPage from './pages/auth/LoginPage';
 
 const DashboardHome = () => (
   <div className="text-white">
