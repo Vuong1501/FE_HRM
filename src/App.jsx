@@ -1,121 +1,75 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import PrivateRoute from './routes/PrivateRoute';
+import DashboardLayout from './layouts/DashboardLayout';
+
+// Mock components (Bạn sẽ thay thế bằng file thật trong thư mục pages/ sau)
+const LoginPage = () => (
+  <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white">
+    <h2 className="text-3xl font-bold mb-4">Đăng nhập</h2>
+    <div className="p-8 bg-slate-800 rounded-xl shadow-xl w-96 border border-slate-700">
+      <p className="text-slate-400 mb-4 text-sm text-center">Trang đăng nhập đang được xây dựng...</p>
+      <button 
+        onClick={() => {
+          localStorage.setItem('access_token', 'mock_token');
+          localStorage.setItem('user_info', JSON.stringify({ name: 'Admin User', role: 'admin' }));
+          window.location.href = '/dashboard';
+        }}
+        className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-all"
+      >
+        Demo Login (Click để vào Dashboard)
+      </button>
+    </div>
+  </div>
+);
+
+const DashboardHome = () => (
+  <div className="text-white">
+    <h2 className="text-2xl font-bold mb-4">Chào mừng đến với feHRM</h2>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="p-6 bg-slate-800 rounded-xl border border-slate-700">
+        <p className="text-slate-400">Tổng nhân viên</p>
+        <h3 className="text-3xl font-bold">120</h3>
+      </div>
+      <div className="p-6 bg-slate-800 rounded-xl border border-slate-700">
+        <p className="text-slate-400">Nghỉ phép hôm nay</p>
+        <h3 className="text-3xl font-bold text-orange-400">5</h3>
+      </div>
+      <div className="p-6 bg-slate-800 rounded-xl border border-slate-700">
+        <p className="text-slate-400">Yêu cầu OT chờ duyệt</p>
+        <h3 className="text-3xl font-bold text-indigo-400">12</h3>
+      </div>
+    </div>
+  </div>
+);
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Public Route */}
+          <Route path="/login" element={<LoginPage />} />
 
-      <div className="ticks"></div>
+          {/* Protected Routes (Yêu cầu đăng nhập mới được vào) */}
+          <Route element={<PrivateRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/dashboard" element={<DashboardHome />} />
+              <Route path="/employees" element={<div className="text-white">Trang Quản lý nhân viên</div>} />
+              <Route path="/overtime" element={<div className="text-white">Trang Quản lý OT</div>} />
+              <Route path="/leave" element={<div className="text-white">Trang Quản lý Nghỉ phép</div>} />
+              <Route path="/attendance" element={<div className="text-white">Trang Chấm công</div>} />
+              <Route path="/settings" element={<div className="text-white">Trang Cài đặt</div>} />
+            </Route>
+          </Route>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+          {/* Redirect mặc định */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
